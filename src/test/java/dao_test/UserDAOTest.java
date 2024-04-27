@@ -1,7 +1,7 @@
-package DAOTest;
+package dao_test;
 
-import org.example.DAO.UserDAO;
-import org.example.DTO.UserDTO;
+import org.example.dao.UserDAO;
+import org.example.dto.UserDTO;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -17,14 +17,17 @@ import java.util.List;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Тесты для класса UserDAO.
+ */
 @Testcontainers
 public class UserDAOTest {
 
     private static Connection connection;
     private static UserDAO userDAO;
 
+    // Запуск контейнера PostgreSQL перед выполнением всех тестов
     @Container
     private static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres")
             .withDatabaseName("test")
@@ -32,6 +35,7 @@ public class UserDAOTest {
             .withPassword("test")
             .withInitScript("create_tables.sql");
 
+    // Установка соединения с контейнером PostgreSQL перед выполнением всех тестов
     @BeforeAll
     static void setUp() throws SQLException {
         postgreSQLContainer.start();
@@ -44,6 +48,7 @@ public class UserDAOTest {
         userDAO = new UserDAO(connection);
     }
 
+    // Закрытие соединения с контейнером PostgreSQL после выполнения всех тестов
     @AfterAll
     static void tearDown() throws SQLException {
         if (connection != null) {
@@ -51,6 +56,9 @@ public class UserDAOTest {
         }
     }
 
+    /**
+     * Тест для поиска пользователя по идентификатору.
+     */
     @Test
     void testFindById() {
         UserDTO user = new UserDTO(1L, "testUser", "test@example.com");
@@ -62,6 +70,9 @@ public class UserDAOTest {
         assertEquals(user.getEmail(), foundUser.getEmail());
     }
 
+    /**
+     * Тест для обновления пользователя.
+     */
     @Test
     void testUpdate() {
         UserDTO user = new UserDTO(1L, "updatedUser", "updated@example.com");
@@ -77,6 +88,9 @@ public class UserDAOTest {
         assertEquals(user.getEmail(), updatedUser.getEmail());
     }
 
+    /**
+     * Тест для удаления пользователя.
+     */
     @Test
     void testDelete() {
         UserDTO user = new UserDTO(1L, "deleteUser", "delete@example.com");
@@ -88,6 +102,9 @@ public class UserDAOTest {
         assertNull(deletedUser);
     }
 
+    /**
+     * Тест для получения всех пользователей.
+     */
     @Test
     void testGetAllUsers() {
         userDAO.createUser(new UserDTO(1L, "user1", "user1@example.com"));

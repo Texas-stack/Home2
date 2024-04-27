@@ -1,6 +1,6 @@
-package org.example.DAO;
+package org.example.dao;
 
-import org.example.DTO.CategoryDTO;
+import org.example.dto.CategoryDTO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,13 +9,27 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class  CategoryDAO {
+/**
+ * Data Access Object (DAO) класс для работы с категориями (CategoryDTO) в базе данных.
+ */
+public class CategoryDAO {
     private Connection connection;
 
+    /**
+     * Конструктор класса CategoryDAO.
+     *
+     * @param connection объект Connection для работы с базой данных
+     */
     public CategoryDAO(Connection connection) {
         this.connection = connection;
     }
 
+    /**
+     * Сохраняет категорию в базе данных.
+     *
+     * @param category объект CategoryDTO для сохранения
+     * @return true, если категория успешно сохранена, иначе false
+     */
     public boolean save(CategoryDTO category) {
         try {
             PreparedStatement statement = connection.prepareStatement("INSERT INTO categories (name) VALUES (?)");
@@ -27,6 +41,12 @@ public class  CategoryDAO {
         return false;
     }
 
+    /**
+     * Находит категорию по ее идентификатору в базе данных.
+     *
+     * @param id идентификатор категории
+     * @return объект CategoryDTO, соответствующий указанному идентификатору, или null, если категория не найдена
+     */
     public CategoryDTO findById(Long id) {
         CategoryDTO category = null;
         try {
@@ -43,6 +63,11 @@ public class  CategoryDAO {
         return category;
     }
 
+    /**
+     * Обновляет информацию о категории в базе данных.
+     *
+     * @param category объект CategoryDTO с обновленными данными
+     */
     public void update(CategoryDTO category) {
         try {
             PreparedStatement statement = connection.prepareStatement("UPDATE categories SET name = ? WHERE id = ?");
@@ -54,6 +79,11 @@ public class  CategoryDAO {
         }
     }
 
+    /**
+     * Удаляет категорию из базы данных по ее идентификатору.
+     *
+     * @param id идентификатор категории для удаления
+     */
     public void delete(Long id) {
         try {
             PreparedStatement statement = connection.prepareStatement("DELETE FROM categories WHERE id = ?");
@@ -64,6 +94,11 @@ public class  CategoryDAO {
         }
     }
 
+    /**
+     * Возвращает список всех категорий из базы данных.
+     *
+     * @return список объектов CategoryDTO, представляющих все категории в базе данных
+     */
     public List<CategoryDTO> getAllCategories() {
         List<CategoryDTO> categories = new ArrayList<>();
         try {

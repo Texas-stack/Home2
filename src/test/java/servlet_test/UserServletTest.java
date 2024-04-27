@@ -1,25 +1,30 @@
-package ServletTest;
+package servlet_test;
 
 import com.google.gson.Gson;
-import org.example.DTO.CategoryDTO;
-import org.example.DTO.UserDTO;
-import org.example.Servlets.CategoryServlet;
-import org.example.Servlets.UserServlet;
+import org.example.dto.UserDTO;
+import org.example.servlets.UserServlet;
 import org.junit.jupiter.api.Test;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+/**
+ * Тесты для класса UserServlet.
+ */
 public class UserServletTest {
 
+    /**
+     * Тест для метода doPost.
+     *
+     * @throws Exception если возникают ошибки при выполнении теста
+     */
     @org.junit.jupiter.api.Test
     void testDoPost() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);
@@ -50,6 +55,11 @@ public class UserServletTest {
 
     }
 
+    /**
+     * Тест для метода doGet.
+     *
+     * @throws Exception если возникают ошибки при выполнении теста
+     */
     @Test
     public void testDoGet() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);

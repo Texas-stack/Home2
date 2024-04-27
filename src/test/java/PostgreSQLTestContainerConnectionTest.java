@@ -10,9 +10,15 @@ import java.sql.Statement;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Тест для проверки соединения с PostgreSQL контейнером.
+ */
 @Testcontainers
-public class PostgreSQLTestContainerConnectionTest {
+class PostgreSQLTestContainerConnectionTest {
 
+    /**
+     * Контейнер PostgreSQL.
+     */
     @Container
     private static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:latest")
             .withDatabaseName("test")
@@ -20,29 +26,34 @@ public class PostgreSQLTestContainerConnectionTest {
             .withPassword("test")
             .withInitScript("create_tables.sql");
 
+    /**
+     * Тест для проверки соединения с PostgreSQL контейнером.
+     *
+     * @throws Exception если возникают ошибки при выполнении теста
+     */
     @Test
-    public void testPostgreSQLContainerConnection() throws Exception {
-        // Get JDBC URL of the PostgreSQL container
+    void testPostgreSQLContainerConnection() throws Exception {
+        // Получаем JDBC URL для PostgreSQL контейнера
         String jdbcUrl = postgres.getJdbcUrl();
 
-        // Connect to the PostgreSQL container using JDBC
+        // Устанавливаем соединение с PostgreSQL контейнером через JDBC
         try (Connection conn = DriverManager.getConnection(jdbcUrl, "test", "test");
              Statement stmt = conn.createStatement()) {
 
-            // Execute a query to check if the table "users" exists
+            // Выполняем запрос для проверки существования таблицы "users"
             ResultSet rs = stmt.executeQuery("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'users')");
             rs.next();
             boolean tableExists = rs.getBoolean(1);
 
-            // Assert that the table "users" exists
+            // Проверяем, что таблица "users" существует
             assertTrue(tableExists);
 
-            // Execute a query to count the number of rows in the table "users"
+            // Выполняем запрос для подсчета количества строк в таблице "users"
             rs = stmt.executeQuery("SELECT COUNT(*) FROM users");
             rs.next();
             int rowCount = rs.getInt(1);
 
-            // Assert that the table "users" is empty
+            // Проверяем, что таблица "users" пуста
             assertEquals(0, rowCount);
         }
     }

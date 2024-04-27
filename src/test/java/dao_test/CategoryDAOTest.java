@@ -1,7 +1,7 @@
-package DAOTest;
+package dao_test;
 
-import org.example.DAO.CategoryDAO;
-import org.example.DTO.CategoryDTO;
+import org.example.dao.CategoryDAO;
+import org.example.dto.CategoryDTO;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -18,12 +18,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+/**
+ * Тесты для класса CategoryDAO.
+ */
 @Testcontainers
 public class CategoryDAOTest {
 
     private static Connection connection;
     private static CategoryDAO categoryDAO;
 
+    // Запуск контейнера PostgreSQL перед выполнением всех тестов
     @Container
     private static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres")
             .withDatabaseName("test")
@@ -31,6 +35,7 @@ public class CategoryDAOTest {
             .withPassword("test")
             .withInitScript("create_tables.sql");
 
+    // Установка соединения с контейнером PostgreSQL перед выполнением всех тестов
     @BeforeAll
     static void setUp() throws SQLException {
         postgreSQLContainer.start();
@@ -43,6 +48,7 @@ public class CategoryDAOTest {
         categoryDAO = new CategoryDAO(connection);
     }
 
+    // Закрытие соединения с контейнером PostgreSQL после выполнения всех тестов
     @AfterAll
     static void tearDown() throws SQLException {
         if (connection != null) {
@@ -50,6 +56,9 @@ public class CategoryDAOTest {
         }
     }
 
+    /**
+     * Тест для сохранения категории.
+     */
     @Test
     void testSaveCategory() {
         CategoryDTO category = new CategoryDTO(1L, "TestCategory");
@@ -60,6 +69,9 @@ public class CategoryDAOTest {
         assertEquals("UpdatedCategory", savedCategory.getName()); // Обновленное значение
     }
 
+    /**
+     * Тест для поиска категории по идентификатору.
+     */
     @Test
     void testFindCategoryById() {
         CategoryDTO category = new CategoryDTO(1L, "TestCategory");
@@ -70,6 +82,9 @@ public class CategoryDAOTest {
         assertEquals("Category1", foundCategory.getName()); // Фактическое значение
     }
 
+    /**
+     * Тест для обновления категории.
+     */
     @Test
     void testUpdateCategory() {
         CategoryDTO category = new CategoryDTO(1L, "UpdatedCategory");
@@ -83,6 +98,9 @@ public class CategoryDAOTest {
         assertEquals("UpdatedCategory", updatedCategory.getName());
     }
 
+    /**
+     * Тест для удаления категории.
+     */
     @Test
     void testDeleteCategory() {
         CategoryDTO category = new CategoryDTO(1L, "TestCategory");
@@ -94,6 +112,9 @@ public class CategoryDAOTest {
         assertNull(deletedCategory);
     }
 
+    /**
+     * Тест для получения всех категорий.
+     */
     @Test
     void testGetAllCategories() {
         categoryDAO.save(new CategoryDTO(1L, "Category1"));
@@ -101,7 +122,5 @@ public class CategoryDAOTest {
 
         List<CategoryDTO> allCategories = categoryDAO.getAllCategories();
         assertEquals(2, allCategories.size());
-
-
     }
 }

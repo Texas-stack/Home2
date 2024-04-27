@@ -1,8 +1,7 @@
-package DAOTest;
+package dao_test;
 
-import org.example.DAO.ProductDAO;
-import org.example.DTO.ProductDTO;
-
+import org.example.dao.ProductDAO;
+import org.example.dto.ProductDTO;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -19,12 +18,16 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+/**
+ * Тесты для класса ProductDAO.
+ */
 @Testcontainers
 public class ProductDAOTest {
 
     private static Connection connection;
     private static ProductDAO productDAO;
 
+    // Запуск контейнера PostgreSQL перед выполнением всех тестов
     @Container
     private static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres")
             .withDatabaseName("test")
@@ -32,6 +35,7 @@ public class ProductDAOTest {
             .withPassword("test")
             .withInitScript("create_tables.sql");
 
+    // Установка соединения с контейнером PostgreSQL перед выполнением всех тестов
     @BeforeAll
     static void setUp() throws SQLException {
         postgreSQLContainer.start();
@@ -44,6 +48,7 @@ public class ProductDAOTest {
         productDAO = new ProductDAO(connection);
     }
 
+    // Закрытие соединения с контейнером PostgreSQL после выполнения всех тестов
     @AfterAll
     static void tearDown() throws SQLException {
         if (connection != null) {
@@ -51,6 +56,9 @@ public class ProductDAOTest {
         }
     }
 
+    /**
+     * Тест для поиска продукта по идентификатору.
+     */
     @Test
     void testFindById() {
         ProductDTO product = new ProductDTO(1L, "Test Product", 100);
@@ -61,6 +69,9 @@ public class ProductDAOTest {
         assertEquals("Test Product", foundProduct.getName());
     }
 
+    /**
+     * Тест для обновления продукта.
+     */
     @Test
     void testUpdate() {
         ProductDTO product = new ProductDTO(1L, "Test Product", 100);
@@ -77,6 +88,9 @@ public class ProductDAOTest {
         assertEquals(200, updatedProduct.getPrice());
     }
 
+    /**
+     * Тест для удаления продукта.
+     */
     @Test
     void testDelete() {
         ProductDTO product = new ProductDTO(1L, "Test Product", 100);
@@ -88,6 +102,9 @@ public class ProductDAOTest {
         assertNull(deletedProduct);
     }
 
+    /**
+     * Тест для получения всех продуктов.
+     */
     @Test
     void testGetAllUsers() {
         productDAO.createProduct(new ProductDTO(1L, "Product 1", 50));

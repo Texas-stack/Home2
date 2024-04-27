@@ -1,6 +1,6 @@
-package org.example.DAO;
+package org.example.dao;
 
-import org.example.DTO.UserDTO;
+import org.example.dto.UserDTO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,14 +9,27 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Data Access Object (DAO) класс для работы с пользователями (UserDTO) в базе данных.
+ */
 public class UserDAO {
     private Connection connection;
 
+    /**
+     * Конструктор класса UserDAO.
+     *
+     * @param connection объект Connection для работы с базой данных
+     */
     public UserDAO(Connection connection) {
         this.connection = connection;
-
     }
 
+    /**
+     * Находит пользователя по его идентификатору в базе данных.
+     *
+     * @param id идентификатор пользователя
+     * @return объект UserDTO, соответствующий указанному идентификатору, или null, если пользователь не найден
+     */
     public UserDTO findById(Long id) {
         UserDTO user = null;
         try {
@@ -33,6 +46,11 @@ public class UserDAO {
         return user;
     }
 
+    /**
+     * Обновляет информацию о пользователе в базе данных.
+     *
+     * @param user объект UserDTO с обновленными данными
+     */
     public void update(UserDTO user) {
         try {
             PreparedStatement statement = connection.prepareStatement("UPDATE users SET username = ?, email = ? WHERE id = ?");
@@ -45,6 +63,11 @@ public class UserDAO {
         }
     }
 
+    /**
+     * Удаляет пользователя из базы данных по его идентификатору.
+     *
+     * @param id идентификатор пользователя для удаления
+     */
     public void delete(Long id) {
         try {
             PreparedStatement statement = connection.prepareStatement("DELETE FROM users WHERE id = ?");
@@ -55,6 +78,12 @@ public class UserDAO {
         }
     }
 
+    /**
+     * Создает нового пользователя в базе данных.
+     *
+     * @param user объект UserDTO, представляющий нового пользователя
+     * @return идентификатор созданного пользователя, или null, если создание не удалось
+     */
     public Long createUser(UserDTO user) {
         Long userId = null;
         try {
@@ -74,6 +103,11 @@ public class UserDAO {
         return userId;
     }
 
+    /**
+     * Возвращает список всех пользователей из базы данных.
+     *
+     * @return список объектов UserDTO, представляющих всех пользователей в базе данных
+     */
     public List<UserDTO> getAllUsers() {
         List<UserDTO> users = new ArrayList<>();
         try {
@@ -89,7 +123,4 @@ public class UserDAO {
         }
         return users;
     }
-
-
-
 }

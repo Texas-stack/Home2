@@ -1,9 +1,8 @@
-package ServletTest;
+package servlet_test;
 
 import com.google.gson.Gson;
-import org.example.DTO.ProductDTO;
-import org.example.Servlets.ProductServlet;
-import org.junit.jupiter.api.Test;
+import org.example.dto.CategoryDTO;
+import org.example.servlets.CategoryServlet;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,18 +10,26 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-public class ProductServletTest {
+/**
+ * Тесты для класса CategoryServlet.
+ */
+public class CategoryServletTest {
 
-    @Test
+    /**
+     * Тест для метода doPost.
+     *
+     * @throws Exception если возникают ошибки при выполнении теста
+     */
+    @org.junit.jupiter.api.Test
     void testDoPost() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
 
-        ProductDTO requestDTO = new ProductDTO(1L, "TestProduct", 100);
+        CategoryDTO requestDTO = new CategoryDTO(1L, "TestCategory");
 
         Gson gson = new Gson();
         String jsonRequest = gson.toJson(requestDTO);
@@ -35,18 +42,22 @@ public class ProductServletTest {
 
         when(response.getWriter()).thenReturn(new PrintWriter(responseWriter));
 
-        new ProductServlet().doPost(request, response);
+        new CategoryServlet().doPost(request, response);
 
         String jsonResponse = responseWriter.toString();
 
-        ProductDTO responseDTO = gson.fromJson(jsonResponse, ProductDTO.class);
+        CategoryDTO responseDTO = gson.fromJson(jsonResponse, CategoryDTO.class);
 
         assertEquals(1L, responseDTO.getId());
-        assertEquals("Processed TestProduct", responseDTO.getName());
-        assertEquals(200, responseDTO.getPrice());
+        assertEquals("Processed TestCategory", responseDTO.getName());
     }
 
-    @Test
+    /**
+     * Тест для метода doGet.
+     *
+     * @throws Exception если возникают ошибки при выполнении теста
+     */
+    @org.junit.jupiter.api.Test
     public void testDoGet() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
@@ -57,15 +68,14 @@ public class ProductServletTest {
         PrintWriter writer = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(writer);
 
-        ProductServlet productServlet = new ProductServlet();
+        CategoryServlet categoryServlet = new CategoryServlet();
 
-        productServlet.doGet(request, response);
+        categoryServlet.doGet(request, response);
 
         writer.flush();
         String jsonResponse = stringWriter.toString().trim();
-        ProductDTO expectedResponse = new ProductDTO(123L, "TestProduct", 100);
+        CategoryDTO expectedResponse = new CategoryDTO(123L, "TestCategory");
         String expectedJsonResponse = new Gson().toJson(expectedResponse);
         assert jsonResponse.equals(expectedJsonResponse) : "Response does not match expected JSON";
     }
 }
-
